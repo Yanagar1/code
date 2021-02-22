@@ -1,18 +1,12 @@
 import math
-string1 = "abc def"
-string2 = "cbafed"
+string1 = "abcdeef"
+string2 = "abcdeef"
 list_of_strings = [string1, string2]
 
 def swap(lyst, pos1, pos2):
     tmp = lyst[pos1]
     lyst[pos1]=lyst[pos2]
     lyst[pos2]=tmp
-
-#practice syntax
-def concat1():
-    #print(string1+string2)
-    #string1 += string2
-    print(" ".join(list_of_strings))
 
 #check if chars in the string don't repeat
 def isUnique(string):
@@ -119,4 +113,47 @@ def palindrome_permutation(string):
     print("True, permutations: ", palindromes_list)
     return True
 
-palindrome_permutation("tctc")
+def one_way(str1, str2):
+    length_coef = len(str1)-len(str2)
+    if abs(length_coef)<=1:
+        #make longer string str1
+        if length_coef == -1:
+            temp = str1
+            str1 = str2
+            str2 = temp
+            length_coef = 1
+        mistakes = 0
+        j=0
+        i=0
+        while j < len(str2):
+            if str1[i]!=str2[j]:
+                mistakes+=1
+                j-=length_coef
+                if mistakes > 1:
+                    return False
+            j+=1
+            i+=1
+    else:
+        return False
+    return True
+
+def str_compression(string):
+    chars = []
+    for char in string:
+        if char not in chars:
+            chars.append(char)
+            chars.append(1)
+        else:
+            ind = chars.index(char)
+            chars[ind+1]+=1
+    print(chars)
+    out = ""
+    for i in chars:
+        out += str(i)
+    print(out)
+    if len(out)<=len(string):
+        return out
+    print(string)
+    return string
+
+str_compression("aaaccccbbbdddddd")
