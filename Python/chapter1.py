@@ -45,6 +45,11 @@ def urlify(string):
     return output
 
 #find polindromes of a string
+#This is what is wrong with my implementation:
+#It exhausts all possible options then filters identical permutations: potentially extra work recreating the original string if it is already a palindrome, extra work if the same char occurs 4,6.. times.
+#It removes spaces before deciding if a palindrome can exist => extra work
+#It is brute-force-like, not an ingenious solution with long functions, many loops, lists, and variables.
+#It is case-sensative and only functions for strings up to 7 non-space characters.
 def palindrome_permutation(string):
     #remember the space locations
     space_loc = []
@@ -113,6 +118,7 @@ def palindrome_permutation(string):
     print("True, permutations: ", palindromes_list)
     return True
 
+#check if 2 strings are 1 edit away: remove replace or insert
 def one_way(str1, str2):
     length_coef = len(str1)-len(str2)
     if abs(length_coef)<=1:
@@ -156,4 +162,20 @@ def str_compression(string):
     print(string)
     return string
 
-str_compression("aaaccccbbbdddddd")
+#rotate 90 degrees
+def rotate_matrix(matrix):
+    n = len(matrix[0])
+    for square in range(int(n/2)):
+        i=square
+        for j in range(square, n-1-square):
+            tmp = matrix[i][j]
+            print(tmp)
+            matrix[i][j]=matrix[j][n-1-i]
+            matrix[j][n-1-i] = matrix[n-1-i][n-1-j]
+            matrix[n-1-i][n-1-j]= matrix[n-1-j][i]
+            matrix[n-1-j][i]=tmp
+
+    print(matrix[0],'\n',matrix[1],'\n',matrix[2],'\n',matrix[3])
+    return matrix
+
+rotate_matrix([["a","b","c","d"],["e","f","g","h"], ["i","j","k","l"],["m","n","o","p"]])
