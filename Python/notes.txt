@@ -5,7 +5,6 @@ Singly list remove from tail
 test doubly list
 doubly list remove from head
 doubly list remove from tail
-test hash table
 hash table for resizable array ??
 build ArrayList
 Finite series for big O

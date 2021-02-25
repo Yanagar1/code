@@ -39,15 +39,18 @@ class Singly_linked_list(object):
 
     def __return_all_nodes__(self):
         ret = ()
+        if self.head == None:
+            return
         current = self.head
         while current!= self.tail:
-            ret+=(current,)
+            ret+=(current.data,)
             current = current.next
-        ret+=(self.tail,)
+        ret+=(current.data,)
+        print(ret)
         return ret
 
 
-class DoublyLinkedList(SinglyLinkedList):
+class DoublyLinkedList(Singly_linked_list):
 
     def __init__(self):
         SinglyLinkedList.__init__(self)
