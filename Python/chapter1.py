@@ -1,5 +1,5 @@
 import math
-
+from BitVector import*
 #-------------------------------------------------------------------------
 def swap(lyst, pos1, pos2):
     tmp = lyst[pos1]
@@ -8,6 +8,7 @@ def swap(lyst, pos1, pos2):
 
 #check if chars in the string don't repeat
 # time: (N-1)+(N-2)+(N-3)..+ 1 = N(N-1)/2 => O(N^2), where N=len(string)
+#last method: sort string and check neighbors NlogN
 def isUnique(string):
     i=0
     while i!=(len(string)):
@@ -24,9 +25,12 @@ Hints:
 #132: Can you solve it in O(N log N)time? What might a solution like that look like?
 Sol. p.192
 '''
+#WITH DATA STRUCTURES:
 #Let's use python dictionaries (hash table) to improve my solution.
 # Space: O(N) Time: O(N)?
-def isUnique_2(string):
+def isUnique_hash(string):
+    if len(string)>128: #added after
+        return False
     chars = {}
     for char in string:
         if char in chars:
@@ -38,11 +42,32 @@ def isUnique_2(string):
     print(chars)
     print("true")
     return True
-#I could use a list the same way. However, the question says to solve without additional data structures.
+#I could use a list the same way.
+#https://engineering.purdue.edu/kak/dist/BitVector-3.4.8.html#24
+def isUnique_bit_vector(string):
+    #create bit vector for all characters in the string
+    #assume i deal with 128 ascii chars
+    if len(string)>128:
+        return False
+    checker = BitVector(size = 128)
+    zero_v = BitVector(size = 128)
+    for char in string:
+        bit_char = (BitVector(intVal = 1, size = 128))<<ord(char)
+        print(bit_char)
+        print(checker)
+        if checker&bit_char != zero_v:
+            print("false")
+            return False
+        checker = checker|bit_char
+        print("new checker: ", checker)
+    print("true")
+    return True
+#did not have to use the bitvector class.
 
 
 #-------------------------------------------------------------------------
 #check if 2 strings are permutations of each other
+#O(N) #could use distionary/hash instead
 def checkPermutation(str1, str2):
     if len(str1)==len(str2):
         str2list = list(str2)
@@ -60,13 +85,23 @@ Hints: p.193
 #131: Two strings that are permutations should have the same characters, but in different orders.
     Can you make the orders the same?
 '''
+#NlogN using the string sort
+def checkPermutation(str1, str2):
+    if len(str1)==len(str2):
+        str1 = sorted(str1)
+        str2 = sorted(str2)
+        if str1 == str2:
+            return True
+    return False
+
+
 #-------------------------------------------------------------------------
 #replace whitespace with %20
+#O(N) since I replace a single character
 def urlify_w_replace(string):
     #requires re-assignment
     string = string.replace(" ", "%20")
     return string
-
 
 #replace whitespace with %20 without using replace()
 def urlify(string):
@@ -83,6 +118,9 @@ Hints: p.194
 #53: It's often easiest to modify strings by going from the end of the string to the beginning.
 #118: You might find you need to know the number of spaces. Can you just count them?
 '''
+#118: If I have to allocate the array of size, then I need to count the number of spaces x3 for the new string.
+
+
 #-------------------------------------------------------------------------
 #find polindromes of a string
 #This is what is wrong with my implementation:
@@ -121,6 +159,7 @@ def palindrome_permutation(string):
     if count > 1:
         print("False")
         return False
+
     #create palindromes
     palindromes_list = [] #contains output
 
@@ -164,6 +203,35 @@ def palindrome_permutation(string):
 #134: Have you tried a hash table? You should be able to get this down to 0(N) time.
 #136: Can you reduce the space usage by using a bit vector?
 '''
+#Let's use dictionary instead of the two lists to count he number of occurences
+def palindrome_permutation_2(string):
+    #remember the space locations
+    space_loc = []
+    str_list = list(string)
+    for i in range(len(str_list)):
+        if str_list[i] == " ":
+            space_loc.append(i)
+    #get rid of spaces
+    for i in range(len(space_loc)):
+        str_list.remove(" ")
+    #check if we could make a polindrome
+    # count # of char occur
+    chars_occur = {}
+    new_str_size = len(str_list) #len without spaces
+    for char in str_list:
+        if char in chars:
+            chars_occur[char]+=1
+        else:
+            x={char:0}
+            chars_occur.update(x)
+    #check if # of occur is div by 2 or ∃ only 1 char not div by 2
+    count = 0
+    for char in chars_occur:
+    	if chars_occur[char]%2 != 0:
+            count+=1
+    if count > 1:
+        print("False")
+        return False
 #-------------------------------------------------------------------------
 #check if 2 strings are 1 edit away: remove replace or insert
 def one_way(str1, str2):
@@ -190,11 +258,11 @@ def one_way(str1, str2):
         return False
     return True
 
-'''Hints: p.199
-#130: Can you do all three checks in a single pass?
-'''
+'''Sol: p.199'''
 
 #-------------------------------------------------------------------------
+#puts all a's together even if they should be apart
+#WRONG
 def str_compression(string):
     chars = []
     for char in string:
@@ -219,6 +287,25 @@ def str_compression(string):
 #110: Be careful that you aren't repeatedly concatenating strings together.
 This can be very inefficient.
 '''
+def str_compression(string):
+    chars = []
+    chars.append(string[0])
+    chars.append(1)
+    for i in range(1, len(string)):
+        if string[i]==string[i-1]:
+            chars[len(chars)-1]+=1
+        else:
+            chars.append(string[i])
+            chars.append(1)
+    out = ""
+    for i in chars:
+        out += str(i)
+    if len(out)<=len(string):
+        print(out)
+        return out
+    return string
+
+#str_compression("aaaaabbbbbaaaa")
 
 #-------------------------------------------------------------------------
 #rotate 90 degrees
@@ -237,13 +324,7 @@ def rotate_matrix(matrix):
     print(matrix[0],'\n',matrix[1],'\n',matrix[2],'\n',matrix[3])
     return matrix
 
-'''
-Hints: p.203
-#51: Try thinking about it layer by layer. Can you rotate a specific layer?
-#100: Rotating a specific layer would just mean swapping the values in four arrays.
-If you were asked to swap the values in two arrays, could you do this?
-Can you then extend it to four arrays?
-'''
+'''Sol: p.203''' #I'm pretty close. O(N^2)
 
 #-------------------------------------------------------------------------
 #if an element in an MxN matrix is 0, its entire row and column are set to 0.
@@ -271,7 +352,7 @@ def zero_matrix(matrix):
     return matrix
 
 '''Hints: p.204
-#74: Can you use O(N) additional space instead of O(N2)?
+#74: Can you use O(N) additional space instead of O(N^2)?
 What information do you really need from the list of cells that are zero?
 #102: You probably need some data storage to maintain a list of the rows and columns that need to be zeroed.
 Can you reduce the additional space usage to 0(1)
@@ -301,4 +382,4 @@ You get erbottlewaterbottlewat.
 
 #-------------------------------------------------------------------------
 #zero_matrix([["a",0,"c",0],["e","f","g","h"], ["i","j","k","l"],["m","n","o","p"]])
-isUnique_2("abbdefg")
+#isUnique_bit_vector("abcdefga")

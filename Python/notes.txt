@@ -1,11 +1,20 @@
 Next:
 
+Theory:
 search permutation for more than 3 chars
+hash table for resizable array
+
+Practice:
 Singly list remove from tail
 test doubly list
 doubly list remove from head
 doubly list remove from tail
-hash table for resizable array ??
+hash table for resizable array
 build ArrayList
 Finite series for big O
 build StringBuilder
+
+C -> Chapter1:
+urlify, string buffers
+permutation_polindrome bit vector
+string rotation skipped
