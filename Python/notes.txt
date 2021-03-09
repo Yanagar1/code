@@ -1,3 +1,12 @@
+Chapter 2:
+2.1 current and runner to remove duplicates
+Why returns data and not object value?
+
+Chapter 1 Python done;
+For the following chapters, I will only try odd questions in python.
+For the second round, I should try even questions in C.
+
+
 Next:
 
 Theory:

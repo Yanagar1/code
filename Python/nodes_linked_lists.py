@@ -40,14 +40,19 @@ class Singly_linked_list(object):
     def __return_all_nodes__(self):
         ret = ()
         if self.head == None:
-            return
-        current = self.head
-        while current!= self.tail:
+            return ret
+        if self.head is self.tail:
+            ret+=(self.head.data,)
+            return ret
+        else:
+            current = self.head
             ret+=(current.data,)
             current = current.next
-        ret+=(current.data,)
-        print(ret)
-        return ret
+            #start with the one after head
+            while current != None:
+                ret+=(current.data,)
+                current = current.next
+            return ret
 
 
 class DoublyLinkedList(Singly_linked_list):
